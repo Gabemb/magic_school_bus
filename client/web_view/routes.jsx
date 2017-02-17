@@ -12,7 +12,7 @@ export default (
         <Route path="student-or-teacher" component={StudentOrTeacher} />
       </Route>
     </Route>
-    <Route path="/instructorcode" component={ViewInstructorCode} />
+    <Route path="/instructorcode/*" component={ViewInstructorCode} />
     <Route path="dashboard/:user/:currentClassCode" onEnter={getTitlebarInfo} component={Dashboard}>
       <IndexRoute component={Overview} />
       <Route path="lesson/:classId" component={AddLesson} />

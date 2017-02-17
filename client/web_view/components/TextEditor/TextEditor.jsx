@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
@@ -12,21 +13,20 @@ const mapDispatchToProps = dispatch => (
 );
 
 const mapStateToProps = state => ({
-  state,
+  instructorCode: state.lesson.instructorCode,
 });
 
 class TextEditor extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      code: '// Code',
       language: 'javascript',
       readOnly: true,
     };
   }
 
   render() {
-    const { language, readOnly, code } = this.state;
+    const { language, readOnly } = this.state;
     const options = {
       lineNumbers: true,
       mode: language,
@@ -34,10 +34,10 @@ class TextEditor extends Component {
     };
     return (
       <div>
-        <CodeMirror value={code} options={options} />
+        <CodeMirror value={this.props.instructorCode} options={options} />
       </div>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TextEditor);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TextEditor));

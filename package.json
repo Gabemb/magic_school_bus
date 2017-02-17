@@ -9,6 +9,7 @@
     "electron-build": "webpack --config webpack.config.electron_dev.js",
     "web": "DEBUG=SOCKET concurrently -k  --prefix '[{name}]' --names 'Server' -c 'bgBlue,bgMagenta' 'yarn server' 'webpack --config webpack.config.js'",
     "server": "DEBUG=SOCKET nodemon start.js",
+    "web:watch": "webpack --config webpack.config.js --watch",
     "seed": "node ./server/seed",
     "test": "DEBUG=API_ROUTES,SOCKET concurrently -k 'yarn server' 'mocha --watch --colors --timeout 3500'",
     "eslint": "./node_modules/.bin/eslint ."
