@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const mkdirp = require('mkdirp');
 const models = require('../../db/models');
-
+const sequelize = models.sequelize;
 const Lesson = models.lesson;
 
 class SocketConnection {
@@ -107,6 +107,7 @@ class SocketConnection {
     const { repoPath, localPath, data, className, lessonName, lessonId } = req.body;
     const { pathToRepoStorage, subPath, fileDirectory } = this.pathMaker(repoPath, localPath, className, lessonName);
     let repo = null;
+    let t1 = sequelize.transaction();
     Lesson.findById(lessonId)
     .then((lesson) => {
       repo = lesson.get('repo');
@@ -116,6 +117,11 @@ class SocketConnection {
           where: {
             id: 1,
           },
+          transaction: t1,
+          lock: {
+            level: t1.LOCK.UPDATE,
+            of: Lesson,
+          }
         });
     })
     .then((updated) => {
@@ -200,10 +206,13 @@ class SocketConnection {
   // api/repoFile/getFile
   // ~ this is to get a file in webs repo file directory
   getFile(req, res) {
+    console.log('==================', req.query);
     const { subPath, className, lessonName } = req.query;
     const pathToRepoStorage = path.join(__dirname, `../../../repo/${className}/${lessonName}`, subPath);
     fs.readFile(pathToRepoStorage, 'utf8', (err, data) => {
+      console.log("++++++++++++++++++++++++++++++",pathToRepoStorage)
       if (err) {
+        console.log(err)
         res.sendStatus(500).send(err);
       } else {
         res.send(data);

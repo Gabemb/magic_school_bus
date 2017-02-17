@@ -29,7 +29,7 @@ class WatchLesson extends Component {
     e.preventDefault();
     const { folderPath, classname, lessonId, lessonname, classCode } = this.props;
     console.log(this.props);
-    fileWatcher(folderPath, classname, lessonId, classCode);
+    fileWatcher("/Users/Joshua/Desktop/projects/test_watching", "Chemistry 123", 1);
     this.setState({ isWatchingFiles: true });
   }
   stopWatchingFiles(e) {
@@ -69,7 +69,6 @@ class WatchLesson extends Component {
           }
           <button
             onClick={this.startWatchingFiles}
-            disabled={isWatchingFiles || this.readyToStartLesson()}
           >
             Start Lesson
           </button>
