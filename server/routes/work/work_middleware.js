@@ -31,17 +31,17 @@ const postWork = (req, res) => {
 // ~post new work and join on joins table
 const getWorkByAssignmentId = (req, res) => {
   const { assignmentId } = req.params;
-  Work.findAll({ 
+  Work.findAll({
     where: {
-      assignmentId ,
+      assignmentId,
     },
     include: [{
       model: models.user,
       attributes: ['firstName', 'lastName'],
       through: {
-        attributes: []
-      }
-    }]
+        attributes: [],
+      },
+    }],
   })
   .then((works) => {
     res.send(works);

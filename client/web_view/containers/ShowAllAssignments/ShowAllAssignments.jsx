@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import style from './ShowAllAssignmentsStyle';
+
+console.log(style);
 
 
 const mapDispatchToProps = dispatch => (
@@ -34,17 +37,34 @@ class ShowAllAssignments extends Component {
     return this.props.assignments;
   }
 
-  showAssignment(assignmentId, e) {
+  showAssignment(e, assignmentId) {
     const idx = e.target.value;
     this.setState({ assignment: idx, assignmentId, showAssignment: true });
   }
 
   assignmentsList() {
-    const { assignments } = this.props;
+    const { assignments, position } = this.props;
     if (this.assignmentsExist()) {
       return assignments.map((ele, idx) =>
-        <li key={ele.id} value={idx} onClick={this.showAssignment.bind(this, ele.id)}>
-          {ele.instructions.slice(0, 49)}
+        <li key={ele.id} style={style.padding}>
+          <div style={style.main}>
+            <div>
+              {ele.instructions.slice(0, 49)}
+            </div>
+            <div style={style.column}>
+              <button value={idx} onClick={e => this.showAssignment(e, ele.id)}>
+              show Details
+              </button>
+              {
+                position === 'Student' ?
+                  <button value={ele.id} onClick={this.submitWork}>
+                  submit work
+                  </button> :
+                  <button value={ele.id} onClick={this.viewWork}>
+                    view submited work
+                  </button>}
+            </div>
+          </div>
         </li>);
     } else {
       return <li>NO ASSIGNMENTS FOR THIS CLASS</li>;
@@ -59,18 +79,21 @@ class ShowAllAssignments extends Component {
     if (this.state.showAssignment) {
       const { assignment } = this.state;
       const { instructions, file, exercises, due } = this.props.assignments[assignment];
-      const { position } = this.props;
-      return (<div>
-        Instructions: {instructions}
-        <br />
-        {file ? <button onClick={e => this.download(e, file)}>Download file </button> : 'no file for this assignment'}
-        <br />
-        Exercises: {exercises}
-        <br />
-        Due: {due}
-        <br />
-        {position === 'Student' ? <button onClick={this.submitWork}>submit work</button> : <button onClick={this.viewWork}>view submited work</button>}
-      </div>);
+      return (
+        <div style={style.column}>
+          <div style={style.padding}>
+            Instructions: {instructions}
+          </div>
+          <div style={style.padding}>
+            {file ? <button onClick={e => this.download(e, file)}>Download file </button> : 'no file for this assignment'}
+          </div>
+          <div style={style.padding}>
+            Exercises: {exercises}
+          </div>
+          <div style={style.padding}>
+            Due: {due}
+          </div>
+        </div>);
     } else {
       return (<div>
         SELECT ASSIGNMENT
@@ -78,8 +101,8 @@ class ShowAllAssignments extends Component {
     }
   }
 
-  submitWork() {
-    const { assignmentId } = this.state;
+  submitWork(e) {
+    const assignmentId = e.target.value;
     const { router } = this.props;
     let currentPath = router.getCurrentLocation().pathname;
     currentPath = currentPath.split('/');
@@ -87,8 +110,8 @@ class ShowAllAssignments extends Component {
     router.push(`/${currentPath}/submitWork/${assignmentId}`);
   }
 
-  viewWork() {
-    const { assignmentId } = this.state;
+  viewWork(e) {
+    const assignmentId = e.target.value;
     const { router } = this.props;
     let currentPath = router.getCurrentLocation().pathname;
     currentPath = currentPath.split('/');
@@ -98,11 +121,11 @@ class ShowAllAssignments extends Component {
 
   render() {
     return (
-      <div style={{ display: 'flex', justify_content: 'center' }}>
-        <ul>
+      <div style={style.main}>
+        <ul style={style.width, style.bullets}>
           {this.assignmentsList()}
         </ul>
-        <div>
+        <div style={style.width}>
           {this.clickedAssingmnet()}
         </div>
       </div>
